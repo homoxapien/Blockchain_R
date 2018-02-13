@@ -44,24 +44,36 @@ gen_new_block <- function(block){
 }
 
 ### define genesis block
-block_gene <- list(index = 1,
+(block_gene <- list(index = 1,
                   timestamp = Sys.time(),
                   data = "This is block #1.",
                   last_hash = "0",
-                  proof = 123,
-                  new_hash = NULL)
+                  proof = 1,
+                  new_hash = NULL))
 
-### build the first 12 blocks in the blockchain
+### build the first 21 blocks in the blockchain
 block_gene <- hash_block(block_gene)
 blockchain <- list(block_gene)
 last_block <- blockchain[[1]]
-N <- 11
+t <- c()
+N <- 20
 for (i in 1:N){
+  start.time <- Sys.time()
+  # start mining 
   new_block <- gen_new_block(last_block)
   blockchain[[i+1]] <- list(new_block)
   last_block <- new_block
+  # end mining
+  end.time <- Sys.time()
+  t[i] <- end.time - start.time
   
   print(cat(paste0("Block #", new_block$index, " has been added", "\n",
                    "\t", "Proof: ", new_block$proof, "\n",
                    "\t", "Hash: ", new_block$new_hash)))
 }
+
+### Plot the time elapsed for each block mined
+plot(1:20, t, type="b", 
+     xlab="index # - 1", 
+     ylab="time consumed (sec)", 
+     main="time consumed for each block mined")
